@@ -1,0 +1,101 @@
+# Visual Studio 2015+
+.vs/
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.suo
+*.user
+*.log
+*.pdb
+*.opendb
+*.tlog
+*.build.log
+*.vspscc
+*.vssscc
+*.vspcc
+*.vsscc
+
+# NuGet packages
+packages/
+*.nupkg
+# NuGet cache files
+.nuget/
+# The client-side package manager
+bower_components/
+node_modules/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# Resharper
+*.DotSettings
+*.DotSettings.user
+
+# NCrunch
+_NCrunch_*
+*.ncrunchsolution
+*.ncrunchproj
+
+# StyleCop
+StyleCop.Cache
+
+# MSTest
+*.trx
+
+# Git history files
+.git-history
+
+# Local folder for IIS Express
+.vs/config/applicationhost.config
+
+# Azure Web Sites publish/FTP settings
+/Properties/PublishProfiles/
+# For Visual Studio 2017 and above, use this instead:
+# /PublishProfiles/
+
+# Windows Azure Tools
+*.cspublish
+*.build.options
+
+# Miscellaneous
+[Tt]humbs.db
+*.bak
+*.tmp
+*.scc
+*.vsix
+*.webtest
+*.rdc
+
+# Project files
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+
+# SQL Server files
+*.mdf
+*.ldf
+*.sdf
+
+# Local settings
+LocalSettings.xml
+
+# DotNet tool files
+.config/dotnet-tools.json
+
+# Editor config
+.editorconfig
+
+# Test results
+TestResults/
+
+# User secrets
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.json.user
