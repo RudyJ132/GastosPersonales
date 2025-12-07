@@ -1,10 +1,12 @@
 ﻿using GastosPersonales.DTOs.Gasto;
 using GastosPersonales.Entities;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GastosPersonales.Interfaces
 {
-    public interface IGastoRepository
+    public interface IGastoRepository : IRepository<Gasto>
     {
         public Task<IEnumerable<Gasto>> GetByUsuarioIdAsync(int usuarioId);
         public Task<IEnumerable<Gasto>> GetByFechaRangoAsync(int usuarioId, DateTime inicio, DateTime fin);

@@ -1,28 +1,37 @@
-﻿using GastosPersonales.Entities;
+﻿using GastosPersonales.Data;
+using GastosPersonales.Entities;
 using GastosPersonales.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GastosPersonales.Repositories
 {
-    public class MetodoPagoRepository : IMetodoPagoRepository
+    public class MetodoPagoRepository : Repository<MetodoPago>, IMetodoPagoRepository
     {
-        public Task<MetodoPago> GetByNombreAsync(int usuarioId, string nombre)
+        public MetodoPagoRepository(ApplicationDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<MetodoPago>> GetByUsuarioIdAsync(int usuarioId)
+        public async Task<MetodoPago> GetByNombreAsync(int usuarioId, string nombre)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(m => m.UsuarioId == usuarioId && m.Nombre == nombre);
         }
 
-        public Task<IEnumerable<MetodoPago>> GetMetodosActivosAsync(int usuarioId)
+        public async Task<IEnumerable<MetodoPago>> GetByUsuarioIdAsync(int usuarioId)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(m => m.UsuarioId == usuarioId).ToListAsync();
         }
 
-        public Task<bool> TieneGastosAsociadosAsync(int metodoPagoId)
+        public async Task<IEnumerable<MetodoPago>> GetMetodosActivosAsync(int usuarioId)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(m => m.UsuarioId == usuarioId && m.Activo).ToListAsync();
+        }
+
+        public async Task<bool> TieneGastosAsociadosAsync(int metodoPagoId)
+        {
+            return await _context.Gastos.AnyAsync(g => g.MetodoPagoId == metodoPagoId);
         }
     }
 }

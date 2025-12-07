@@ -1,8 +1,10 @@
 ﻿using GastosPersonales.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace GastosPersonales.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         public IUsuarioRepository Usuarios { get; }
         public ICategoriaRepository Categorias { get; }
@@ -16,6 +18,3 @@ namespace GastosPersonales.Interfaces
         public Task RollbackAsync();
     }
 }
-
-
-

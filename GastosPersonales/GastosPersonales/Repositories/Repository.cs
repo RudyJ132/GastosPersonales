@@ -1,44 +1,58 @@
 ﻿using GastosPersonales.Data;
 using GastosPersonales.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GastosPersonales.Repositories
 {
-    public class Repository<T>(ApplicationDbContext applicationDbContext) : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
-        ApplicationDbContext _applicationDbContext = applicationDbContext;
+        protected readonly ApplicationDbContext _context;
+        protected readonly DbSet<T> _dbSet;
 
-       
-        public  async Task<T> AddAsync(T entity)
+        public Repository(ApplicationDbContext context)
         {
-          // await _applicationDbContext.Add(entity);
-           
-
-
+            _context = context;
+            _dbSet = context.Set<T>();
         }
 
-        public Task DeleteAsync(int id)
+        public async Task<T> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            await _dbSet.AddAsync(entity);
+            return entity;
         }
 
-        public Task<bool> ExistsAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var entity = await GetByIdAsync(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
+        public async Task<bool> ExistsAsync(int id)
         {
-            throw new NotImplementedException();
+            var entity = await GetByIdAsync(id);
+            return entity != null;
         }
 
-        public Task<T> GetByIdAsync(int id)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.ToListAsync();
+        }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _dbSet.FindAsync(id);
         }
 
         public Task UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+            return Task.CompletedTask;
         }
     }
 }

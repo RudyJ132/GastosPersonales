@@ -1,28 +1,37 @@
-﻿using GastosPersonales.Entities;
+﻿using GastosPersonales.Data;
+using GastosPersonales.Entities;
 using GastosPersonales.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GastosPersonales.Repositories
 {
-    public class CategoriaRepository : ICategoriaRepository
+    public class CategoriaRepository : Repository<Categoria>, ICategoriaRepository
     {
-        public Task<Categoria> GetByNombreAsync(int usuarioId, string nombre)
+        public CategoriaRepository(ApplicationDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Categoria>> GetByUsuarioIdAsync(int usuarioId)
+        public async Task<Categoria> GetByNombreAsync(int usuarioId, string nombre)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(c => c.UsuarioId == usuarioId && c.Nombre == nombre);
         }
 
-        public Task<IEnumerable<Categoria>> GetCategoriasActivasAsync(int usuarioId)
+        public async Task<IEnumerable<Categoria>> GetByUsuarioIdAsync(int usuarioId)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(c => c.UsuarioId == usuarioId).ToListAsync();
         }
 
-        public Task<bool> TieneGastosAsociadosAsync(int categoriaId)
+        public async Task<IEnumerable<Categoria>> GetCategoriasActivasAsync(int usuarioId)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(c => c.UsuarioId == usuarioId && c.Activo).ToListAsync();
+        }
+
+        public async Task<bool> TieneGastosAsociadosAsync(int categoriaId)
+        {
+            return await _context.Gastos.AnyAsync(g => g.CategoriaId == categoriaId);
         }
     }
 }

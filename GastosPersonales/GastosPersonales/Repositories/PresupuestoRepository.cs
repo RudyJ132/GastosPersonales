@@ -1,33 +1,44 @@
-﻿using GastosPersonales.Entities;
+﻿using GastosPersonales.Data;
+using GastosPersonales.Entities;
 using GastosPersonales.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GastosPersonales.Repositories
 {
-    public class PresupuestoRepository : IPresupuestoRepository
+    public class PresupuestoRepository : Repository<Presupuesto>, IPresupuestoRepository
     {
-        public Task<bool> ExistePresupuestoAsync(int usuarioId, int categoriaId, int mes, int anio)
+        public PresupuestoRepository(ApplicationDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Presupuesto>> GetByMesAnioAsync(int usuarioId, int mes, int anio)
+        public async Task<bool> ExistePresupuestoAsync(int usuarioId, int categoriaId, int mes, int anio)
         {
-            throw new NotImplementedException();
+            return await _dbSet.AnyAsync(p => p.UsuarioId == usuarioId && p.CategoriaId == categoriaId && p.Mes == mes && p.Anio == anio);
         }
 
-        public Task<Presupuesto> GetByUsuarioCategoriaMesAsync(int usuarioId, int categoriaId, int mes, int anio)
+        public async Task<IEnumerable<Presupuesto>> GetByMesAnioAsync(int usuarioId, int mes, int anio)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(p => p.UsuarioId == usuarioId && p.Mes == mes && p.Anio == anio).ToListAsync();
         }
 
-        public Task<IEnumerable<Presupuesto>> GetByUsuarioIdAsync(int usuarioId)
+        public async Task<Presupuesto> GetByUsuarioCategoriaMesAsync(int usuarioId, int categoriaId, int mes, int anio)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(p => p.UsuarioId == usuarioId && p.CategoriaId == categoriaId && p.Mes == mes && p.Anio == anio);
         }
 
-        public Task<decimal> GetGastoAcumuladoAsync(int usuarioId, int categoriaId, int mes, int anio)
+        public async Task<IEnumerable<Presupuesto>> GetByUsuarioIdAsync(int usuarioId)
         {
-            throw new NotImplementedException();
+            return await _dbSet.Where(p => p.UsuarioId == usuarioId).ToListAsync();
+        }
+
+        public async Task<decimal> GetGastoAcumuladoAsync(int usuarioId, int categoriaId, int mes, int anio)
+        {
+            return await _context.Gastos
+                .Where(g => g.UsuarioId == usuarioId && g.CategoriaId == categoriaId && g.Fecha.Year == anio && g.Fecha.Month == mes)
+                .SumAsync(g => g.Monto);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using GastosPersonales.Entities;
+﻿using System.Collections.Generic;
+using System;
 
 namespace GastosPersonales.Entities
 {
@@ -12,14 +13,7 @@ namespace GastosPersonales.Entities
         public DateTime? UltimaActualizacion { get; set; }
         public ICollection<Categoria> Categorias { get; set; }
         public ICollection<MetodoPago> MetodosPago { get; set; }
-          
+        public ICollection<Gasto> Gastos { get; set; }
+        public ICollection<Presupuesto> Presupuestos { get; set; }
     }
 }
-
-
-//DateTime FechaRegistro
-//+DateTime ? UltimaActualizacion
-//+ ICollection~Categoria~Categorias
-//+ ICollection~MetodoPago~MetodosPago
-//+ ICollection~Gasto~Gastos
-//+ ICollection~Presupuesto~Presupuestos
