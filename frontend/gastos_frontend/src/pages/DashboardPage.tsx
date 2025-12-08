@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ChartsWrapper from '../components/ChartsWrapper';
-import type { ChartData } from 'chart.js'; // Import ChartData type
-import apiClient from '../services/apiClient';
+
+import { api } from '../services/http';
 import { useUIStore } from '../store/uiStore';
 
 // Mock data for demonstration purposes
@@ -42,12 +42,12 @@ const DashboardPage: React.FC = () => {
       try {
         setLoading(true);
         // In a real application, you would fetch data from your API
-        // const data = await apiClient('/dashboard-summary', { isProtected: true });
-        // setDashboardData(data);
-        setDashboardData(mockDashboardData);
-        showMessage('success', 'Dashboard data loaded!');
+        const data = await api<any>('/reportes/dashboard-summary', { isProtected: true });
+        setDashboardData(data);
+        // setDashboardData(mockDashboardData);
+        // showMessage('success', 'Dashboard data loaded!');
       } catch (error: any) {
-        showMessage('error', error.message || 'Failed to load dashboard data.');
+        showMessage('error', error.message || 'Error al cargar datos del dashboard.');
       } finally {
         setLoading(false);
       }
@@ -59,7 +59,7 @@ const DashboardPage: React.FC = () => {
   if (!dashboardData) {
     return (
       <div className="flex justify-center items-center h-full text-gray-500">
-        Loading dashboard data...
+        Cargando datos...
       </div>
     );
   }
@@ -74,25 +74,25 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Panel Principal</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         {/* Total Spent Card */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-medium text-gray-700 mb-2">Total Spent This Month</h2>
-          <p className="text-4xl font-bold text-indigo-600">
+          <h2 className="text-lg font-medium text-gray-700 mb-2">Gasto Total Este Mes</h2>
+          <p className="text-4xl font-bold text-primary-600">
             ${totalSpentThisMonth.toFixed(2)}
           </p>
         </div>
 
         {/* Month over Month Comparison */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-medium text-gray-700 mb-2">Month vs. Last Month</h2>
+          <h2 className="text-lg font-medium text-gray-700 mb-2">Comparativa Mes Anterior</h2>
           <p className="text-2xl font-bold text-gray-900 mb-1">
-            This Month: ${monthOverMonthComparison.thisMonth.toFixed(2)}
+            Mes Actual: ${monthOverMonthComparison.thisMonth.toFixed(2)}
           </p>
           <p className="text-xl font-medium mb-2">
-            Last Month: ${monthOverMonthComparison.lastMonth.toFixed(2)}
+            Mes Anterior: ${monthOverMonthComparison.lastMonth.toFixed(2)}
           </p>
           <p className={`text-lg font-semibold ${getComparisonColor(monthOverMonthComparison.thisMonth, monthOverMonthComparison.lastMonth)}`}>
             {monthOverMonthComparison.thisMonth > monthOverMonthComparison.lastMonth ? '↑' : '↓'}{' '}
@@ -100,38 +100,39 @@ const DashboardPage: React.FC = () => {
               ((monthOverMonthComparison.thisMonth - monthOverMonthComparison.lastMonth) /
                 monthOverMonthComparison.lastMonth) *
               100
-            ).toFixed(2)}%
+            ).toFixed(1)}
+            %
           </p>
         </div>
 
         {/* Top Categories */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-medium text-gray-700 mb-2">Top Categories</h2>
-          <ul>
-            {topCategories.map((cat, index) => (
-              <li key={index} className="flex justify-between items-center py-1 border-b last:border-b-0 border-gray-100">
-                <span className="text-gray-900">{cat.name}</span>
-                <span className="font-semibold text-gray-800">${cat.amount.toFixed(2)}</span>
+          <h2 className="text-lg font-medium text-gray-700 mb-4">Top Categorías</h2>
+          <ul className="space-y-3">
+            {topCategories.map((category, index) => (
+              <li key={index} className="flex justify-between items-center">
+                <span className="text-gray-600">{category.name}</span>
+                <span className="font-semibold text-gray-900">${category.amount.toFixed(2)}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {/* Summary Chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Spending Chart */}
         <ChartsWrapper
-          type="doughnut"
-          data={summaryChartData as ChartData<'doughnut'>}
-          title="Spending by Category"
+          type="bar"
+          data={summaryChartData}
+          title="Desglose Mensual de Gastos"
         />
 
         {/* Budget Alerts */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-medium text-gray-700 mb-4">Budget Alerts</h2>
+          <h2 className="text-lg font-medium text-gray-700 mb-4">Alertas de Presupuesto</h2>
           <div className="space-y-4">
             {budgetAlerts.length === 0 ? (
-              <p className="text-gray-500">No budget alerts at the moment.</p>
+              <p className="text-gray-500">No hay alertas activas.</p>
             ) : (
               budgetAlerts.map((alert, index) => (
                 <div key={index} className="flex items-center space-x-3">
@@ -139,14 +140,13 @@ const DashboardPage: React.FC = () => {
                     <p className="text-sm font-medium text-gray-800">{alert.category}</p>
                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                       <div
-                        className={`h-2.5 rounded-full ${
-                          alert.percentage >= 100 ? 'bg-red-500' : alert.percentage >= 80 ? 'bg-orange-500' : 'bg-yellow-400'
-                        }`}
+                        className={`h-2.5 rounded-full ${alert.percentage >= 100 ? 'bg-red-500' : alert.percentage >= 80 ? 'bg-orange-500' : 'bg-yellow-400'
+                          }`}
                         style={{ width: `${alert.percentage > 100 ? 100 : alert.percentage}%` }}
                       ></div>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      ${alert.spent.toFixed(2)} of ${alert.limit.toFixed(2)} spent ({alert.percentage}%)
+                      ${alert.spent.toFixed(2)} de ${alert.limit.toFixed(2)} gastado ({alert.percentage}%)
                     </p>
                   </div>
                   <span className="text-sm text-gray-600">{alert.percentage}%</span>

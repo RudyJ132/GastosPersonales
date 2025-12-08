@@ -27,9 +27,9 @@ const ReportsPage: React.FC = () => {
       setMonthlyReport(report);
       setExpensesBreakdown(breakdown);
       setMonthlyComparison(comparison);
-      showMessage('success', 'Report generated successfully!');
+      showMessage('success', '¡Reporte generado exitosamente!');
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to generate report.');
+      showMessage('error', error.message || 'Error al generar el reporte.');
     } finally {
       setLoading(false);
     }
@@ -52,12 +52,12 @@ const ReportsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Reports</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Reportes</h1>
 
       <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
         <div className="flex-grow w-full md:w-auto">
           <Input
-            label="Select Month"
+            label="Seleccionar Mes"
             type="month"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
@@ -65,7 +65,7 @@ const ReportsPage: React.FC = () => {
         </div>
         <div className="flex space-x-2">
           <Button onClick={handleGenerateReport} variant="primary" loading={isLoading}>
-            Generate Report
+            Generar Reporte
           </Button>
         </div>
       </div>
@@ -74,12 +74,12 @@ const ReportsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Monthly Report Summary Card */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-medium text-gray-700 mb-2">Monthly Summary for {selectedMonth}</h2>
+            <h2 className="text-lg font-medium text-gray-700 mb-2">Resumen Mensual de {selectedMonth}</h2>
             <p className="text-2xl font-bold text-indigo-600">
-              Total Expenses: ${monthlyReport.totalGastos.toFixed(2)}
+              Gastos Totales: ${monthlyReport.totalGastos.toFixed(2)}
             </p>
             <p className="text-xl font-bold text-green-600">
-              Total Income: ${monthlyReport.totalIngresos.toFixed(2)}
+              Ingresos Totales: ${monthlyReport.totalIngresos.toFixed(2)}
             </p>
             <p className={`text-3xl font-bold ${monthlyReport.balance >= 0 ? 'text-green-700' : 'text-red-700'} mt-2`}>
               Balance: ${monthlyReport.balance.toFixed(2)}
@@ -89,21 +89,21 @@ const ReportsPage: React.FC = () => {
           {/* Monthly Comparison Card */}
           {monthlyComparison && (
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-lg font-medium text-gray-700 mb-2">Monthly Comparison</h2>
-              <p className="text-gray-900">Current Month ({monthlyComparison.mesActual}/{monthlyComparison.anioActual}): ${monthlyComparison.totalMesActual.toFixed(2)}</p>
-              <p className="text-gray-900">Previous Month ({monthlyComparison.mesAnterior}/{monthlyComparison.anioAnterior}): ${monthlyComparison.totalMesAnterior.toFixed(2)}</p>
-              
+              <h2 className="text-lg font-medium text-gray-700 mb-2">Comparativa Mensual</h2>
+              <p className="text-gray-900">Mes Actual ({monthlyComparison.mesActual}/{monthlyComparison.anioActual}): ${monthlyComparison.totalMesActual.toFixed(2)}</p>
+              <p className="text-gray-900">Mes Anterior ({monthlyComparison.mesAnterior}/{monthlyComparison.anioAnterior}): ${monthlyComparison.totalMesAnterior.toFixed(2)}</p>
+
               {/* Calculate difference and percentage for display if needed */}
               {(() => {
                 const difference = monthlyComparison.totalMesActual - monthlyComparison.totalMesAnterior;
-                const percentageChange = monthlyComparison.totalMesAnterior === 0 
-                  ? (difference === 0 ? 0 : 100) 
+                const percentageChange = monthlyComparison.totalMesAnterior === 0
+                  ? (difference === 0 ? 0 : 100)
                   : (difference / monthlyComparison.totalMesAnterior) * 100;
                 const colorClass = difference > 0 ? 'text-red-500' : (difference < 0 ? 'text-green-500' : 'text-gray-500');
 
                 return (
                   <p className={`${colorClass} font-semibold`}>
-                    Difference: {difference > 0 ? '+' : ''}{difference.toFixed(2)} ({percentageChange.toFixed(2)}%)
+                    Diferencia: {difference > 0 ? '+' : ''}{difference.toFixed(2)} ({percentageChange.toFixed(2)}%)
                   </p>
                 );
               })()}
@@ -114,7 +114,7 @@ const ReportsPage: React.FC = () => {
 
       {expensesBreakdown.length > 0 && (
         <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-          <ChartsWrapper type="doughnut" data={chartData} title="Spending Distribution by Category" />
+          <ChartsWrapper type="doughnut" data={chartData} title="Distribución de Gastos por Categoría" />
         </div>
       )}
     </div>

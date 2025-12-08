@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -8,99 +8,84 @@ import ExpensesPage from './pages/ExpensesPage';
 import ImportPage from './pages/ImportPage';
 import BudgetsPage from './pages/BudgetsPage';
 import ReportsPage from './pages/ReportsPage';
-import ProfilePage from './pages/ProfilePage'; // Import ProfilePage
+import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
-import Layout from './components/Layout';
+import App from './App';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/" element={<div>Home Page (Placeholder)</div>} />
+      <Route element={<App />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-      {/* Protected routes wrapped with Layout */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Layout>
+        {/* Protected routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
               <DashboardPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/categorias"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categorias"
+          element={
+            <ProtectedRoute>
               <CategoriesPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/metodos"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/metodos"
+          element={
+            <ProtectedRoute>
               <PaymentMethodsPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/gastos"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gastos"
+          element={
+            <ProtectedRoute>
               <ExpensesPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/importar"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/importar"
+          element={
+            <ProtectedRoute>
               <ImportPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/presupuestos"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/presupuestos"
+          element={
+            <ProtectedRoute>
               <BudgetsPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/reportes"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reportes"
+          element={
+            <ProtectedRoute>
               <ReportsPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/perfil"
-        element={
-          <ProtectedRoute>
-            <Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
               <ProfilePage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      {/* Add other protected routes here and wrap them with Layout */}
+            </ProtectedRoute>
+          }
+        />
+      </Route>
     </Routes>
   );
 };

@@ -55,5 +55,13 @@ namespace GastosPersonales.Controllers
             var categorias = await _reporteService.GetTopCategoriasAsync(usuarioId, mes, anio, top);
             return Ok(categorias);
         }
+
+        [HttpGet("dashboard-summary")]
+        public async Task<IActionResult> GetDashboardSummary()
+        {
+            var usuarioId = GetUsuarioId();
+            var summary = await _reporteService.GetDashboardSummaryAsync(usuarioId);
+            return Ok(summary);
+        }
     }
 }

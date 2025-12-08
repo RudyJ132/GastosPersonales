@@ -21,7 +21,7 @@ const Select: React.FC<SelectProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg shadow-sm';
+    'block w-full pl-3 pr-10 py-2 text-base text-gray-900 bg-white border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg shadow-sm';
   const errorStyles = error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : '';
 
   return (

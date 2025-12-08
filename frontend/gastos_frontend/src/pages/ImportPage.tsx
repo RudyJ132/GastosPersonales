@@ -17,7 +17,7 @@ const ImportPage: React.FC = () => {
 
   const handleImport = async () => {
     if (!selectedFile) {
-      showMessage('error', 'Please select a file to import.');
+      showMessage('error', 'Por favor selecciona un archivo para importar.');
       return;
     }
 
@@ -31,7 +31,7 @@ const ImportPage: React.FC = () => {
         showMessage('error', result.message);
       }
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to import data.');
+      showMessage('error', error.message || 'Error al importar datos.');
     } finally {
       setLoading(false);
     }
@@ -39,37 +39,37 @@ const ImportPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Import Data from Excel</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Importar Datos desde Excel</h1>
 
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
         <FileUploader
           onFileSelect={handleFileSelect}
           acceptedFileTypes=".xlsx, .xls"
-          label="Upload an Excel file with your expenses"
+          label="Sube un archivo Excel con tus gastos"
         />
         <div className="mt-4 flex justify-end">
           <Button onClick={handleImport} disabled={!selectedFile} loading={isLoading}> {/* Pass loading prop */}
-            Import Excel
+            Importar Excel
           </Button>
         </div>
       </div>
 
       {importResult && (
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-medium text-gray-700 mb-4">Import Results</h2>
+          <h2 className="text-lg font-medium text-gray-700 mb-4">Resultados de Importación</h2>
           <p className={`font-semibold ${importResult.status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
             {importResult.message}
           </p>
           {importResult.importedCount !== undefined && (
-            <p className="mt-2">Successfully imported {importResult.importedCount} records.</p>
+            <p className="mt-2">Registros importados exitosamente: {importResult.importedCount}.</p>
           )}
           {importResult.errors && importResult.errors.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-md font-medium text-red-700 mb-2">Errors during import:</h3>
+              <h3 className="text-md font-medium text-red-700 mb-2">Errores durante la importación:</h3>
               <ul className="list-disc list-inside text-sm text-gray-700">
                 {importResult.errors.map((err, index) => (
                   <li key={index}>
-                    Row {err.row}: {err.message} - Data: {JSON.stringify(err.data)}
+                    Fila {err.row}: {err.message} - Datos: {JSON.stringify(err.data)}
                   </li>
                 ))}
               </ul>

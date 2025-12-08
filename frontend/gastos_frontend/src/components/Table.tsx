@@ -52,7 +52,9 @@ const Table = <T extends { id?: string | number }>(
                     key={colIndex}
                     className={`py-4 px-6 ${column.align ? `text-${column.align}` : 'text-left'}`}
                   >
-                    {column.render ? column.render(item) : (item[column.key] as React.ReactNode)}
+                    {column.render
+                      ? column.render(item)
+                      : (column.key !== 'actions' ? (item[column.key as keyof T] as React.ReactNode) : null)}
                   </td>
                 ))}
               </tr>

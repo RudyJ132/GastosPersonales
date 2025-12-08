@@ -23,7 +23,7 @@ const PaymentMethodsPage: React.FC = () => {
       const data = await getAllPaymentMethods();
       setPaymentMethods(data);
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to fetch payment methods.');
+      showMessage('error', error.message || 'Error al obtener métodos de pago.');
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ const PaymentMethodsPage: React.FC = () => {
   const handleCreateOrUpdatePaymentMethod = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!methodName.trim()) {
-      showMessage('error', 'Payment method name cannot be empty.');
+      showMessage('error', 'El nombre del método de pago no puede estar vacío.');
       return;
     }
 
@@ -48,14 +48,14 @@ const PaymentMethodsPage: React.FC = () => {
           icono: methodIcon,
         };
         await updatePaymentMethod(editingPaymentMethod.id, updateData);
-        showMessage('success', 'Payment method updated successfully!');
+        showMessage('success', 'Método de pago actualizado exitosamente!');
       } else {
         const createData: CreatePaymentMethodRequest = {
           nombre: methodName,
           icono: methodIcon,
         };
         await createPaymentMethod(createData);
-        showMessage('success', 'Payment method created successfully!');
+        showMessage('success', 'Método de pago creado exitosamente!');
       }
       setIsModalOpen(false);
       setMethodName('');
@@ -64,7 +64,7 @@ const PaymentMethodsPage: React.FC = () => {
       setMethodIsActive(true);
       fetchPaymentMethods(); // Re-fetch payment methods to update the list
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to save payment method.');
+      showMessage('error', error.message || 'Error al guardar el método de pago.');
     } finally {
       setLoading(false);
     }
@@ -75,10 +75,10 @@ const PaymentMethodsPage: React.FC = () => {
       try {
         setLoading(true);
         await deletePaymentMethod(id);
-        showMessage('success', 'Payment method deleted successfully!');
+        showMessage('success', 'Método de pago eliminado exitosamente!');
         fetchPaymentMethods(); // Re-fetch payment methods
       } catch (error: any) {
-        showMessage('error', error.message || 'Failed to delete payment method.');
+        showMessage('error', error.message || 'Error al eliminar el método de pago.');
       } finally {
         setLoading(false);
       }
@@ -93,21 +93,21 @@ const PaymentMethodsPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const columns = [
-    { key: 'name', header: 'Method Name' },
-    { key: 'icon', header: 'Icon', render: (method: PaymentMethod) => method.icon || '-' },
-    { key: 'isActive', header: 'Active', render: (method: PaymentMethod) => (method.isActive ? 'Yes' : 'No') },
+  const columns: any[] = [
+    { key: 'name', header: 'Nombre' },
+    { key: 'icon', header: 'Icono', render: (method: PaymentMethod) => method.icon || '-' },
+    { key: 'isActive', header: 'Activo', render: (method: PaymentMethod) => (method.isActive ? 'Sí' : 'No') },
     {
       key: 'actions',
-      header: 'Actions',
+      header: 'Acciones',
       align: 'right',
       render: (method: PaymentMethod) => (
         <>
           <Button size="small" variant="info" onClick={() => handleEditPaymentMethod(method)} disabled={isLoading}>
-            Edit
+            Editar
           </Button>
           <Button size="small" variant="danger" onClick={() => handleDeletePaymentMethod(method.id)} className="ml-2" disabled={isLoading}>
-            Delete
+            Eliminar
           </Button>
         </>
       ),
@@ -116,7 +116,7 @@ const PaymentMethodsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Payment Methods</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Métodos de Pago</h1>
 
       <div className="flex justify-end mb-4">
         <Button onClick={() => {
@@ -125,7 +125,7 @@ const PaymentMethodsPage: React.FC = () => {
           setMethodIcon('');
           setMethodIsActive(true);
           setIsModalOpen(true);
-        }} loading={isLoading}>Add New Method</Button>
+        }} loading={isLoading}>Nuevo Método</Button>
       </div>
 
       <Table data={paymentMethods} columns={columns} />
@@ -139,46 +139,44 @@ const PaymentMethodsPage: React.FC = () => {
           setMethodIcon('');
           setMethodIsActive(true);
         }}
-        title={editingPaymentMethod ? 'Edit Payment Method' : 'Add New Payment Method'}
+        title={editingPaymentMethod ? 'Editar Método' : 'Nuevo Método'}
       >
         <form onSubmit={handleCreateOrUpdatePaymentMethod}>
           <Input
-            label="Method Name"
+            label="Nombre"
             type="text"
-            placeholder="e.g., Cash, Credit Card"
+            placeholder="Ej: Efectivo, Tarjeta Crédito"
             value={methodName}
             onChange={(e) => setMethodName(e.target.value)}
             required
           />
           <Input
-            label="Icon (Optional)"
+            label="Icono (Opcional)"
             type="text"
-            placeholder="e.g., 💳"
+            placeholder="Ej: 💳"
             value={methodIcon}
             onChange={(e) => setMethodIcon(e.target.value)}
           />
           {editingPaymentMethod && (
             <div className="mt-4 flex items-center justify-between">
-              <span className="text-gray-700">Active</span>
+              <span className="text-gray-700">Activo</span>
               <Switch
                 checked={methodIsActive}
                 onChange={setMethodIsActive}
-                className={`${
-                  methodIsActive ? 'bg-indigo-600' : 'bg-gray-200'
-                } relative inline-flex h-6 w-11 items-center rounded-full`}
+                className={`${methodIsActive ? 'bg-indigo-600' : 'bg-gray-200'
+                  } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
-                <span className="sr-only">Enable notifications</span>
+                <span className="sr-only">Habilitar</span>
                 <span
-                  className={`${
-                    methodIsActive ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                  className={`${methodIsActive ? 'translate-x-6' : 'translate-x-1'
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
             </div>
           )}
           <div className="flex justify-end mt-4">
             <Button type="submit" variant="primary" loading={isLoading}>
-              {editingPaymentMethod ? 'Update Method' : 'Create Method'}
+              {editingPaymentMethod ? 'Actualizar' : 'Guardar'}
             </Button>
           </div>
         </form>

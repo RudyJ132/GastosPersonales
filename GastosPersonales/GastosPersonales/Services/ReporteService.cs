@@ -76,5 +76,72 @@ namespace GastosPersonales.Services
 
             return _mapper.Map<IEnumerable<CategoriaDto>>(categorias.Where(c => topCategoriasIds.Contains(c.Id)));
         }
+
+        public async Task<DashboardSummaryDto> GetDashboardSummaryAsync(int usuarioId)
+        {
+            var today = DateTime.Today;
+            var currentMonth = today.Month;
+            var currentYear = today.Year;
+            var lastMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+            var lastMonthYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+
+            // Total Spent This Month
+            var totalSpentThisMonth = await _unitOfWork.Gastos.GetTotalByPeriodoAsync(usuarioId, currentMonth, currentYear);
+
+            // Month Over Month Comparison
+            var totalSpentLastMonth = await _unitOfWork.Gastos.GetTotalByPeriodoAsync(usuarioId, lastMonth, lastMonthYear);
+            var comparison = new MonthOverMonthComparisonDto
+            {
+                ThisMonth = totalSpentThisMonth,
+                LastMonth = totalSpentLastMonth
+            };
+
+            // Top Categories (Top 3)
+            var gastosPorCategoria = await _unitOfWork.Gastos.GetTotalPorCategoriaAsync(usuarioId, currentMonth, currentYear);
+            var allCategories = await _unitOfWork.Categorias.GetByUsuarioIdAsync(usuarioId);
+            
+            var topCategories = gastosPorCategoria
+                .OrderByDescending(g => g.Value)
+                .Take(3)
+                .Select(g => new TopCategoryDto
+                {
+                    Name = allCategories.FirstOrDefault(c => c.Id == g.Key)?.Nombre ?? "Unknown",
+                    Amount = g.Value
+                })
+                .ToList();
+
+            // Summary Chart Data
+            var chartLabels = topCategories.Select(c => c.Name).ToList();
+            var chartData = topCategories.Select(c => c.Amount).ToList();
+            var backgroundColors = new List<string> { "#4F46E5", "#22C55E", "#EF4444", "#F59E0B", "#6366F1" };
+
+            var summaryChartData = new SummaryChartDataDto
+            {
+                Labels = chartLabels,
+                Datasets = new List<ChartDatasetDto>
+                {
+                    new ChartDatasetDto
+                    {
+                        Label = "Spent",
+                        Data = chartData,
+                        BackgroundColor = backgroundColors.Take(chartData.Count).ToList(),
+                        HoverOffset = 4
+                    }
+                }
+            };
+
+            // Budget Alerts (Mock logic for now as fetching budgets requires complexities)
+            // TODO: Integrate actual budget logic
+            var budgetAlerts = new List<BudgetAlertDto>(); 
+
+            return new DashboardSummaryDto
+            {
+                TotalSpentThisMonth = totalSpentThisMonth,
+                MonthOverMonthComparison = comparison,
+                TopCategories = topCategories,
+                SummaryChartData = summaryChartData,
+                BudgetAlerts = budgetAlerts
+            };
+        }
     }
 }

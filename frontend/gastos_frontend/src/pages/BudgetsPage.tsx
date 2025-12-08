@@ -15,7 +15,7 @@ const BudgetsPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
-  const [month, setMonth] = useState(format(new Date(), 'yyyy-MM'));
+  const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'yyyy-MM'));
   const [categoryId, setCategoryId] = useState('');
   const [amount, setAmount] = useState<number>(0);
   const { showMessage, setLoading, isLoading } = useUIStore(); // Import isLoading
@@ -27,7 +27,7 @@ const BudgetsPage: React.FC = () => {
       setCategories(categoriesData);
       if (categoriesData.length > 0) setCategoryId(categoriesData[0].id.toString());
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to fetch categories.');
+      showMessage('error', error.message || 'Error al obtener categorías.');
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ const BudgetsPage: React.FC = () => {
       );
       setBudgets(enrichedBudgets);
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to fetch budgets.');
+      showMessage('error', error.message || 'Error al obtener presupuestos.');
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ const BudgetsPage: React.FC = () => {
   const handleCreateOrUpdateBudget = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!selectedMonth || !categoryId || amount <= 0) {
-      showMessage('error', 'Please fill all required fields correctly.');
+      showMessage('error', 'Por favor complete todos los campos correctamente.');
       return;
     }
 
@@ -84,7 +84,7 @@ const BudgetsPage: React.FC = () => {
           montoLimite: amount,
         };
         await updateBudget(editingBudget.id.toString(), updateData);
-        showMessage('success', 'Budget updated successfully!');
+        showMessage('success', '¡Presupuesto actualizado exitosamente!');
       } else {
         const createData: CreateBudgetRequest = {
           categoriaId: parseInt(categoryId),
@@ -93,27 +93,27 @@ const BudgetsPage: React.FC = () => {
           montoLimite: amount,
         };
         await createBudget(createData);
-        showMessage('success', 'Budget created successfully!');
+        showMessage('success', '¡Presupuesto creado exitosamente!');
       }
       setIsModalOpen(false);
       resetForm();
       fetchBudgets(); // Re-fetch budgets to update the list
     } catch (error: any) {
-      showMessage('error', error.message || 'Failed to save budget.');
+      showMessage('error', error.message || 'Error al guardar el presupuesto.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteBudget = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this budget?')) {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este presupuesto?')) {
       try {
         setLoading(true);
         await deleteBudget(id);
-        showMessage('success', 'Budget deleted successfully!');
+        showMessage('success', '¡Presupuesto eliminado exitosamente!');
         fetchBudgets(); // Re-fetch budgets
       } catch (error: any) {
-        showMessage('error', error.message || 'Failed to delete budget.');
+        showMessage('error', error.message || 'Error al eliminar el presupuesto.');
       } finally {
         setLoading(false);
       }
@@ -137,14 +137,14 @@ const BudgetsPage: React.FC = () => {
 
   const categoryOptions = categories.map((cat) => ({ value: cat.id.toString(), label: cat.name }));
 
-  const columns = [
-    { key: 'mes', header: 'Month', render: (budget: Budget) => `${budget.mes}/${budget.anio}` },
-    { key: 'categoryName', header: 'Category' },
-    { key: 'montoLimite', header: 'Budget Amount', render: (budget: Budget) => `$${budget.montoLimite.toFixed(2)}` },
-    { key: 'montoActual', header: 'Spent', render: (budget: Budget) => `$${(budget.montoActual || 0).toFixed(2)}` },
+  const columns: any[] = [
+    { key: 'mes', header: 'Mes', render: (budget: Budget) => `${budget.mes}/${budget.anio}` },
+    { key: 'categoryName', header: 'Categoría' },
+    { key: 'montoLimite', header: 'Monto Límite', render: (budget: Budget) => `$${budget.montoLimite.toFixed(2)}` },
+    { key: 'montoActual', header: 'Gastado', render: (budget: Budget) => `$${(budget.montoActual || 0).toFixed(2)}` },
     {
       key: 'porcentajeConsumido',
-      header: 'Spent (%)',
+      header: 'Consumido (%)',
       render: (budget: Budget) => {
         const percentage = budget.porcentajeConsumido || 0;
         let colorClass = 'text-green-600';
@@ -155,15 +155,15 @@ const BudgetsPage: React.FC = () => {
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: 'Acciones',
       align: 'right',
       render: (budget: Budget) => (
         <>
           <Button size="small" variant="info" onClick={() => handleEditBudget(budget)} disabled={isLoading}>
-            Edit
+            Editar
           </Button>
           <Button size="small" variant="danger" onClick={() => handleDeleteBudget(budget.id.toString())} className="ml-2" disabled={isLoading}>
-            Delete
+            Eliminar
           </Button>
         </>
       ),
@@ -172,10 +172,10 @@ const BudgetsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Budgets</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Presupuestos</h1>
 
       <div className="flex justify-end mb-4">
-        <Button onClick={() => { setIsModalOpen(true); resetForm(); }} loading={isLoading}>Add New Budget</Button>
+        <Button onClick={() => { setIsModalOpen(true); resetForm(); }} loading={isLoading}>Nuevo Presupuesto</Button>
       </div>
 
       <Table data={budgets} columns={columns} />
@@ -186,26 +186,26 @@ const BudgetsPage: React.FC = () => {
           setIsModalOpen(false);
           resetForm();
         }}
-        title={editingBudget ? 'Edit Budget' : 'Add New Budget'}
+        title={editingBudget ? 'Editar Presupuesto' : 'Nuevo Presupuesto'}
       >
         <form onSubmit={handleCreateOrUpdateBudget}>
           <Input
-            label="Month"
+            label="Mes"
             type="month"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
             required
           />
           <Select
-            label="Category"
+            label="Categoría"
             options={categoryOptions}
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
             required
-            placeholder="Select a category"
+            placeholder="Selecciona una categoría"
           />
           <Input
-            label="Budget Amount"
+            label="Monto Límite"
             type="number"
             placeholder="0.00"
             value={amount}
@@ -216,7 +216,7 @@ const BudgetsPage: React.FC = () => {
           />
           <div className="flex justify-end mt-4">
             <Button type="submit" variant="primary" loading={isLoading}> {/* Pass loading prop */}
-              {editingBudget ? 'Update Budget' : 'Create Budget'}
+              {editingBudget ? 'Actualizar' : 'Guardar'}
             </Button>
           </div>
         </form>

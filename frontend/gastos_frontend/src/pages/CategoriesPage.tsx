@@ -94,7 +94,7 @@ const CategoriesPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const columns = [
+  const columns: any[] = [
     { key: 'name', header: 'Category Name' },
     { key: 'description', header: 'Description' },
     { key: 'isActive', header: 'Active', render: (category: Category) => (category.isActive ? 'Yes' : 'No') },
@@ -164,15 +164,13 @@ const CategoriesPage: React.FC = () => {
               <Switch
                 checked={categoryIsActive}
                 onChange={setCategoryIsActive}
-                className={`${
-                  categoryIsActive ? 'bg-indigo-600' : 'bg-gray-200'
-                } relative inline-flex h-6 w-11 items-center rounded-full`}
+                className={`${categoryIsActive ? 'bg-indigo-600' : 'bg-gray-200'
+                  } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
                 <span className="sr-only">Enable notifications</span>
                 <span
-                  className={`${
-                    categoryIsActive ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                  className={`${categoryIsActive ? 'translate-x-6' : 'translate-x-1'
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
             </div>

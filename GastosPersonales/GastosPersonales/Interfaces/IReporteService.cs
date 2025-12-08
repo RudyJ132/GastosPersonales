@@ -10,6 +10,7 @@ namespace GastosPersonales.Interfaces
         public Task<IEnumerable<GastoPorCategoriaDto>> GetGastosPorCategoriaAsync(int usuarioId, int mes, int anio);
         public Task<ComparacionMensualDto> CompararMesesAsync(int usuarioId, int mes, int anio);
         public Task<IEnumerable<CategoriaDto>> GetTopCategoriasAsync(int usuarioId, int mes, int anio, int top);
+        public Task<DashboardSummaryDto> GetDashboardSummaryAsync(int usuarioId);
     }
 }
 

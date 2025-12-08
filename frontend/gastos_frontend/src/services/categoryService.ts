@@ -1,16 +1,16 @@
-import apiClient from './apiClient';
+import { api } from './http';
 import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../types/Types';
 
 export const getAllCategories = async (): Promise<Category[]> => {
-  return apiClient<Category[]>('/categorias', { isProtected: true });
+  return api<Category[]>('/categorias', { isProtected: true });
 };
 
 export const getCategoryById = async (id: string): Promise<Category> => {
-  return apiClient<Category>(`/categorias/${id}`, { isProtected: true });
+  return api<Category>(`/categorias/${id}`, { isProtected: true });
 };
 
 export const createCategory = async (data: CreateCategoryRequest): Promise<Category> => {
-  return apiClient<Category>('/categorias', {
+  return api<Category>('/categorias', {
     method: 'POST',
     body: JSON.stringify(data),
     isProtected: true,
@@ -18,7 +18,7 @@ export const createCategory = async (data: CreateCategoryRequest): Promise<Categ
 };
 
 export const updateCategory = async (id: string, data: UpdateCategoryRequest): Promise<Category> => {
-  return apiClient<Category>(`/categorias/${id}`, {
+  return api<Category>(`/categorias/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
     isProtected: true,
@@ -26,7 +26,7 @@ export const updateCategory = async (id: string, data: UpdateCategoryRequest): P
 };
 
 export const deleteCategory = async (id: string): Promise<void> => {
-  return apiClient<void>(`/categorias/${id}`, {
+  return api<void>(`/categorias/${id}`, {
     method: 'DELETE',
     isProtected: true,
   });
@@ -34,11 +34,11 @@ export const deleteCategory = async (id: string): Promise<void> => {
 
 // Assuming the backend has these endpoints
 export const getActiveCategories = async (): Promise<Category[]> => {
-  return apiClient<Category[]>('/categorias/activas', { isProtected: true });
+  return api<Category[]>('/categorias/activas', { isProtected: true });
 };
 
 export const getInactiveCategories = async (): Promise<Category[]> => {
-  return apiClient<Category[]>('/categorias/inactivas', { isProtected: true });
+  return api<Category[]>('/categorias/inactivas', { isProtected: true });
 };
 
 // Note: Backend has ExisteNombreAsync, but typically frontend handles validation before calling the API
